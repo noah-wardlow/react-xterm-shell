@@ -1,0 +1,72 @@
+{
+  "name": "react-xterm-shell",
+  "version": "0.0.0",
+  "description": "A small React shell around xterm.js: a useXTerm hook + XTerm component with a stable imperative controller, automatic fitting, and opt-in webgl/web-links/unicode11 addons.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "sideEffects": false,
+  "keywords": [
+    "xterm",
+    "xterm.js",
+    "react",
+    "terminal",
+    "pty",
+    "webgl",
+    "hook",
+    "component"
+  ],
+  "license": "MIT",
+  "author": "Noah Wardlow",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/noah-wardlow/react-xterm-shell"
+  },
+  "bugs": {
+    "url": "https://github.com/noah-wardlow/react-xterm-shell/issues"
+  },
+  "homepage": "https://github.com/noah-wardlow/react-xterm-shell#readme",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run typecheck && pnpm run build"
+  },
+  "peerDependencies": {
+    "@xterm/xterm": ">=5",
+    "react": ">=18"
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/addon-unicode11": "^0.8.0",
+    "@xterm/addon-web-links": "^0.11.0",
+    "@xterm/addon-webgl": "^0.18.0"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@types/react": "^19.0.0",
+    "@xterm/xterm": "^5.5.0",
+    "react": "^19.2.0",
+    "semantic-release": "^25.0.3",
+    "tsup": "^8.4.0",
+    "typescript": "~5.8.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
