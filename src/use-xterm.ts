@@ -127,6 +127,7 @@ export function useXTerm(opts: UseXTermOptions = {}): XTermHandle {
       },
       write: (data) => termRef.current?.write(data),
       clear: () => termRef.current?.clear(),
+      reset: () => termRef.current?.reset(),
       focus: () => termRef.current?.focus(),
       fit: () => fitRef.current?.fit(),
       attach
