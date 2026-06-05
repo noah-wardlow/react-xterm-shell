@@ -1,10 +1,12 @@
 # react-xterm-shell
 
-[npm package](https://www.npmjs.com/package/react-xterm-shell)
+[Demo](https://react-xterm-shell-example.pages.dev) | [npm package](https://www.npmjs.com/package/react-xterm-shell) | [Example source](https://github.com/noah-wardlow/react-xterm-shell/tree/main/example)
 
 > **Beta** — under active development; the API may change between minor versions until 1.0.
 
 A small React shell around [xterm.js](https://xtermjs.org/). It is a **React shell around xterm, not a React renderer for terminal cells** — xterm owns the grid, parsing, and rendering; this gives you the lifecycle, a stable imperative controller, automatic fitting, and opt-in addons as ordinary React.
+
+The demo is a Vite web page with theme switching, transport telemetry, and a mock backend filesystem users can mutate from the terminal.
 
 - `useXTerm()` — creates and owns the xterm instance behind a stable controller.
 - `<XTerm />` — the DOM mount point.

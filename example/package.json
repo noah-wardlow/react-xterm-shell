@@ -1,0 +1,22 @@
+{
+  "name": "react-xterm-shell-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 3020",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 3021"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.0.4",
+    "@xterm/xterm": "^5.5.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-xterm-shell": "file:..",
+    "typescript": "~5.8.2",
+    "vite": "^7.1.7"
+  },
+  "devDependencies": {
+    "@types/react-dom": "^19.2.3"
+  }
+}
