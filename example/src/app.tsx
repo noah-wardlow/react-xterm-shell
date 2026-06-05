@@ -242,7 +242,7 @@ function executeShell(input: string, cwd: string[], fs: DirNode): ShellResult {
   if (command === "help") {
     return {
       output:
-        "Commands: help, pwd, ls [path], cd <path>, cat <file>, tree [path], touch <file>, mkdir <dir>, write <file> <text>, append <file> <text>, rm <path>, clear, reset\r\n"
+        "Commands: help, pwd, ls [path], cd <path>, cat <file>, tree [path], touch <file>, mkdir <dir>, write <file> <text>, append <file> <text>, rm <path>, links, unicode, clear, reset\r\n"
     };
   }
 
@@ -320,10 +320,16 @@ function executeShell(input: string, cwd: string[], fs: DirNode): ShellResult {
   if (command === "reset") return { fs: cloneFs(initialFs), cwd: initialCwd, resetTerminal: true };
 
   if (command === "whoami") return { output: "guest\r\n" };
-  if (command === "deploy") {
+  if (command === "links") {
     return {
       output:
-        "building package\r\nrunning checks\r\npublishing preview filesystem\r\ndone: https://example.invalid/session/mockfs\r\n"
+        "web-links addon demo\r\nOpen: https://github.com/noah-wardlow/react-xterm-shell\r\nDocs: https://xtermjs.org/docs/\r\n"
+    };
+  }
+  if (command === "unicode") {
+    return {
+      output:
+        "unicode11 addon demo\r\nBox drawing: ┌──────────────┐\r\n             │  width: ok   │\r\n             └──────────────┘\r\nWide text:   コンテナ  シェル  端末\r\nSymbols:     ✓ λ → ∑ ⚙\r\n"
     };
   }
 
@@ -521,7 +527,7 @@ export function App() {
       if (!terminal.term || bootedTermRef.current === terminal.term) return false;
       bootedTermRef.current = terminal.term;
       terminal.write("\x1b[1mreact-xterm-shell mock backend\x1b[0m\r\n");
-      terminal.write("Try: ls, cat README.md, write logs/session.txt hello\r\n\r\n");
+      terminal.write("Try: ls, cat README.md, links, unicode\r\n\r\n");
       writePrompt();
       terminal.focus();
       return true;
@@ -587,10 +593,8 @@ export function App() {
               <button onClick={() => runCommand("ls")}>ls</button>
               <button onClick={() => runCommand("cat README.md")}>cat README.md</button>
               <button onClick={() => runCommand("tree /home/guest")}>tree</button>
-              <button onClick={() => runCommand("write logs/session.txt hello from the mock backend")}>
-                write file
-              </button>
-              <button onClick={() => runCommand("deploy")}>deploy</button>
+              <button onClick={() => runCommand("links")}>web-links</button>
+              <button onClick={() => runCommand("unicode")}>unicode11</button>
             </div>
           </div>
         </section>

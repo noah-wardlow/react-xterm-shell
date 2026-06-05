@@ -6,7 +6,7 @@
 
 A small React shell around [xterm.js](https://xtermjs.org/). It is a **React shell around xterm, not a React renderer for terminal cells** — xterm owns the grid, parsing, and rendering; this gives you the lifecycle, a stable imperative controller, automatic fitting, and opt-in addons as ordinary React.
 
-The demo is a Vite web page with theme switching, transport telemetry, and a mock backend filesystem users can mutate from the terminal.
+The demo is a Vite web page with theme switching, transport telemetry, web-links/unicode11 examples, and a mock backend filesystem users can mutate from the terminal.
 
 - `useXTerm()` — creates and owns the xterm instance behind a stable controller.
 - `<XTerm />` — the DOM mount point.
