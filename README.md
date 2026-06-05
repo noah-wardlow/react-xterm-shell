@@ -119,7 +119,8 @@ function RemoteShell({ socket }: { socket: WebSocket }) {
 | `addons` | `ITerminalAddon[]` | — | Extra addons (e.g. a search addon). |
 
 The returned `XTermHandle` has `attach` (the callback ref for `<XTerm>`), a live
-`term` getter, and `write` / `clear` / `focus` / `fit`. The handle is stable
+`term` getter, and `write` / `clear` / `reset` / `focus` / `fit` (`clear` keeps
+the prompt line; `reset` blanks the screen and drops scrollback). The handle is stable
 across renders; callbacks are read through refs, so passing fresh `onData` /
 `onResize` each render does not remount the terminal.
 

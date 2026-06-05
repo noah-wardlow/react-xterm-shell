@@ -41,7 +41,10 @@ export interface UseXTermOptions {
 export interface TerminalController {
   readonly term: Terminal | null;
   write: (data: string | Uint8Array) => void;
+  /** Clear scrollback, keeping the current prompt line (xterm `clear`). */
   clear: () => void;
+  /** Full reset to a blank screen, dropping scrollback (xterm `reset`). */
+  reset: () => void;
   focus: () => void;
   fit: () => void;
 }
