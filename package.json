@@ -1,6 +1,6 @@
 {
   "name": "react-xterm-shell",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A small React shell around xterm.js: a useXTerm hook + XTerm component with a stable imperative controller, automatic fitting, and opt-in webgl/web-links/unicode11 addons.",
   "type": "module",
   "main": "./dist/index.js",
@@ -34,7 +34,7 @@
   "author": "Noah Wardlow",
   "repository": {
     "type": "git",
-    "url": "https://github.com/noah-wardlow/react-xterm-shell"
+    "url": "git+https://github.com/noah-wardlow/react-xterm-shell.git"
   },
   "bugs": {
     "url": "https://github.com/noah-wardlow/react-xterm-shell/issues"
