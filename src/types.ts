@@ -47,6 +47,14 @@ export interface TerminalController {
   reset: () => void;
   focus: () => void;
   fit: () => void;
+  /**
+   * Current grid size, or `null` before the terminal is attached. Use this to
+   * re-send the size to your backend when the transport (re)connects: the
+   * initial `onResize` fires synchronously at mount — before your socket is
+   * open — so that first size is otherwise dropped and the PTY stays at its
+   * connect-time default.
+   */
+  getDimensions: () => { cols: number; rows: number } | null;
 }
 
 export type XTermHandle = TerminalController & {
