@@ -1,5 +1,7 @@
 # react-xterm-shell
 
+[npm package](https://www.npmjs.com/package/react-xterm-shell)
+
 > **Beta** — under active development; the API may change between minor versions until 1.0.
 
 A small React shell around [xterm.js](https://xtermjs.org/). It is a **React shell around xterm, not a React renderer for terminal cells** — xterm owns the grid, parsing, and rendering; this gives you the lifecycle, a stable imperative controller, automatic fitting, and opt-in addons as ordinary React.
