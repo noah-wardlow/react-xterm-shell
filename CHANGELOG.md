@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/noah-wardlow/react-xterm-shell/compare/v0.2.0...v0.3.0) (2026-06-05)
+
+
+### Features
+
+* add hosted demo site ([719b47c](https://github.com/noah-wardlow/react-xterm-shell/commit/719b47c3bacee6f653a3e2526d30c7c2fe3b0a4b))
+
 # [0.2.0](https://github.com/noah-wardlow/react-xterm-shell/compare/v0.1.1...v0.2.0) (2026-06-05)
 
 
