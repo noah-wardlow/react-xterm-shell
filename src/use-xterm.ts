@@ -99,12 +99,16 @@ export function useXTerm(opts: UseXTermOptions = {}): XTermHandle {
         }
       }
 
-      fit.fit();
-
+      // Register handlers before the first fit() so the mount-time resize is
+      // delivered to onResize. If fit() runs first, that initial resize event
+      // fires with no listener attached and the starting grid size is lost —
+      // leaving a transport that only syncs on onResize stuck at the default.
       const disposables = [
         term.onData((data) => onDataRef.current?.(data)),
         term.onResize((size) => onResizeRef.current?.(size))
       ];
+
+      fit.fit();
 
       const resizeObserver = new ResizeObserver(() => fit.fit());
       resizeObserver.observe(el);
@@ -136,6 +140,10 @@ export function useXTerm(opts: UseXTermOptions = {}): XTermHandle {
       reset: () => termRef.current?.reset(),
       focus: () => termRef.current?.focus(),
       fit: () => fitRef.current?.fit(),
+      getDimensions: () => {
+        const term = termRef.current;
+        return term ? { cols: term.cols, rows: term.rows } : null;
+      },
       attach
     }),
     [attach]

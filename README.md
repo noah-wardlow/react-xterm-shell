@@ -96,9 +96,22 @@ function RemoteShell({ socket }: { socket: WebSocket }) {
 
   socket.onmessage = (event) => terminal.write(event.data);
 
+  // Re-send the size once the socket is open. The mount-time `onResize` fires
+  // before the socket connects, so that first resize is dropped — without this
+  // the PTY stays at its connect-time default and the shell renders narrower
+  // than the pane.
+  socket.onopen = () => {
+    const size = terminal.getDimensions();
+    if (size) socket.send(JSON.stringify({ type: "resize", ...size }));
+  };
+
   return <XTerm terminal={terminal} className="h-[420px]" />;
 }
 ```
+
+> **Sizing gotcha:** the terminal fits at mount, so the first `onResize` fires
+> *before* your transport is connected and that size is lost. Always re-send the
+> size on (re)connect using `getDimensions()`, as shown above.
 
 ## API
 
@@ -119,10 +132,12 @@ function RemoteShell({ socket }: { socket: WebSocket }) {
 | `addons` | `ITerminalAddon[]` | — | Extra addons (e.g. a search addon). |
 
 The returned `XTermHandle` has `attach` (the callback ref for `<XTerm>`), a live
-`term` getter, and `write` / `clear` / `reset` / `focus` / `fit` (`clear` keeps
-the prompt line; `reset` blanks the screen and drops scrollback). The handle is stable
-across renders; callbacks are read through refs, so passing fresh `onData` /
-`onResize` each render does not remount the terminal.
+`term` getter, and `write` / `clear` / `reset` / `focus` / `fit` /
+`getDimensions` (`clear` keeps the prompt line; `reset` blanks the screen and
+drops scrollback; `getDimensions` returns the current `{ cols, rows }` or `null`
+before attach — see the sizing gotcha under [Backend wiring](#backend-wiring)).
+The handle is stable across renders; callbacks are read through refs, so passing
+fresh `onData` / `onResize` each render does not remount the terminal.
 
 ### `<XTerm terminal={handle} className? style? />`
 
