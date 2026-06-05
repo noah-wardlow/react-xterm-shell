@@ -1,3 +1,10 @@
+## [0.3.1](https://github.com/noah-wardlow/react-xterm-shell/compare/v0.3.0...v0.3.1) (2026-06-05)
+
+
+### Bug Fixes
+
+* showcase terminal addons in demo ([325c618](https://github.com/noah-wardlow/react-xterm-shell/commit/325c618075aa7cc2d8d71bc975f8f0a23f5fd1f7))
+
 # [0.3.0](https://github.com/noah-wardlow/react-xterm-shell/compare/v0.2.0...v0.3.0) (2026-06-05)
 
 
