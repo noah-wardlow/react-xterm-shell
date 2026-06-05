@@ -49,7 +49,7 @@ export interface TerminalController {
 export type XTermHandle = TerminalController & {
   /**
    * Callback ref for the mount element. Creates the terminal on mount and
-   * returns the cleanup that disposes it (React 19 ref-cleanup).
+   * disposes it when React clears the ref on unmount.
    */
-  attach: (el: HTMLDivElement | null) => (() => void) | undefined;
+  attach: (el: HTMLDivElement | null) => void;
 };

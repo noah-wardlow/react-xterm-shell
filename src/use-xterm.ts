@@ -38,6 +38,7 @@ export function useXTerm(opts: UseXTermOptions = {}): XTermHandle {
 
   const termRef = useRef<Terminal | null>(null);
   const fitRef = useRef<FitAddon | null>(null);
+  const cleanupRef = useRef<(() => void) | null>(null);
 
   // Latest callbacks live in refs so `attach` does not depend on their identity.
   // Otherwise a parent passing fresh callbacks each render would change `attach`,
@@ -56,7 +57,12 @@ export function useXTerm(opts: UseXTermOptions = {}): XTermHandle {
 
   const attach = useCallback(
     (el: HTMLDivElement | null) => {
-      if (!el || termRef.current) return undefined;
+      if (!el) {
+        cleanupRef.current?.();
+        cleanupRef.current = null;
+        return;
+      }
+      if (termRef.current) return;
 
       const term = new Terminal({
         cursorBlink: cursorBlink ?? true,
@@ -106,7 +112,7 @@ export function useXTerm(opts: UseXTermOptions = {}): XTermHandle {
       termRef.current = term;
       fitRef.current = fit;
 
-      return () => {
+      cleanupRef.current = () => {
         resizeObserver.disconnect();
         disposables.forEach((d) => d.dispose());
         term.dispose();

@@ -43,12 +43,17 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "release": "semantic-release",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "pnpm run typecheck && pnpm run build"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "peerDependencies": {
     "@xterm/xterm": ">=5",
-    "react": ">=18"
+    "react": ">=19"
   },
   "dependencies": {
     "@xterm/addon-fit": "^0.10.0",
@@ -67,6 +72,7 @@
     "typescript": "~5.8.2"
   },
   "engines": {
-    "node": ">=18"
-  }
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.30.0"
 }

@@ -1,19 +1,9 @@
 name: Release
 
-# Dormant until npm publishing is set up. To enable automatic releases:
-#   1. Add an NPM_TOKEN repository secret (npm automation token).
-#   2. Uncomment the `push` trigger below.
-# Until then this only runs when dispatched manually, and semantic-release is a
-# dry run so nothing is published by accident.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      dry_run:
-        description: "Run semantic-release in dry-run mode (no publish)"
-        type: boolean
-        default: true
-  # push:
-  #   branches: [main]
 
 permissions:
   contents: write
@@ -24,14 +14,14 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
@@ -39,7 +29,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
       - run: pnpm run typecheck
-      - run: npx semantic-release ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
+      - if: env.NPM_TOKEN == ''
+        run: echo "NPM_TOKEN is not configured; skipping publish."
+      - run: pnpm exec semantic-release
+        if: env.NPM_TOKEN != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
