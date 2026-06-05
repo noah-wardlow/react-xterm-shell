@@ -1,6 +1,6 @@
 {
   "name": "react-xterm-shell",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A small React shell around xterm.js: a useXTerm hook + XTerm component with a stable imperative controller, automatic fitting, and opt-in webgl/web-links/unicode11 addons.",
   "type": "module",
   "main": "./dist/index.js",

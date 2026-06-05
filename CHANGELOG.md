@@ -1,3 +1,10 @@
+## [0.3.2](https://github.com/noah-wardlow/react-xterm-shell/compare/v0.3.1...v0.3.2) (2026-06-05)
+
+
+### Bug Fixes
+
+* add tab completion to demo shell ([0290b8a](https://github.com/noah-wardlow/react-xterm-shell/commit/0290b8a92f0c13d3e887d39465d5aca62edc9400))
+
 ## [0.3.1](https://github.com/noah-wardlow/react-xterm-shell/compare/v0.3.0...v0.3.1) (2026-06-05)
 
 
