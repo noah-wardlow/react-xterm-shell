@@ -15,7 +15,7 @@ It does **not** include a transport — wire `onData`/`onResize` to your own Web
 ## Install
 
 ```bash
-npm install react-xterm-shell @xterm/xterm react
+npm install react-xterm-shell @xterm/xterm react@^19
 ```
 
 React 19 and `@xterm/xterm` are peer dependencies. Import the xterm stylesheet once in your app:
