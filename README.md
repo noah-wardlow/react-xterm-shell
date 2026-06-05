@@ -8,7 +8,7 @@ A small React shell around [xterm.js](https://xtermjs.org/). It is a **React she
 
 - `useXTerm()` — creates and owns the xterm instance behind a stable controller.
 - `<XTerm />` — the DOM mount point.
-- `TerminalProvider` / `useTerminalController()` — drive the terminal from chrome (toolbars) without prop drilling.
+- `TerminalProvider` / `useTerminalController()` — drive the terminal from surrounding UI without prop drilling.
 - Automatic sizing via `FitAddon` + `ResizeObserver`.
 - Opt-in `webgl` (with DOM fallback), `web-links`, and `unicode11` addons, on by default.
 
@@ -29,45 +29,74 @@ import "@xterm/xterm/css/xterm.css";
 ## Quick start
 
 ```tsx
-import { useXTerm, XTerm } from "react-xterm-shell";
+import { useEffect, useRef } from "react";
+import { useXTerm, XTerm, type XTermHandle } from "react-xterm-shell";
 import "@xterm/xterm/css/xterm.css";
 
-function TerminalPanel({ socket }: { socket: WebSocket }) {
+export function TerminalPanel() {
+  const terminalRef = useRef<XTermHandle | null>(null);
   const terminal = useXTerm({
-    onData: (data) => socket.send(JSON.stringify({ type: "input", data })),
-    onResize: ({ cols, rows }) =>
-      socket.send(JSON.stringify({ type: "resize", cols, rows })),
+    onData: (data) => terminalRef.current?.write(data === "\r" ? "\r\n$ " : data),
     theme: { background: "#1a1b26", foreground: "#a9b1d6" }
   });
+  terminalRef.current = terminal;
 
-  // Stream server output into the terminal:
-  socket.onmessage = (e) => terminal.write(e.data);
+  useEffect(() => {
+    terminal.write("react-xterm-shell\r\n$ ");
+    terminal.focus();
+  }, [terminal]);
 
   return <XTerm terminal={terminal} style={{ width: "100%", height: 420 }} />;
 }
 ```
 
-## Composition
+## External controls
 
-`useXTerm` returns a stable controller, so a toolbar can drive it imperatively
+`useXTerm` returns a stable controller, so surrounding UI can drive it imperatively
 without re-rendering as bytes stream:
 
 ```tsx
 import { useXTerm, XTerm, TerminalProvider, useTerminalController } from "react-xterm-shell";
 
-function Toolbar() {
+function SessionActions() {
   const term = useTerminalController();
-  return <button onClick={term.clear}>Clear</button>;
+  return (
+    <div>
+      <button onClick={() => term.write("deploy --target staging\r\n")}>Insert command</button>
+      <button onClick={term.clear}>Clear</button>
+      <button onClick={term.focus}>Focus</button>
+    </div>
+  );
 }
 
 function Panel() {
   const terminal = useXTerm({ onData: send });
   return (
     <TerminalProvider value={terminal}>
-      <Toolbar />
+      <SessionActions />
       <XTerm terminal={terminal} className="h-[420px]" />
     </TerminalProvider>
   );
+}
+```
+
+## Backend wiring
+
+The package does not include a transport. Connect `onData` and `onResize` to a
+PTY, SSH, container, or WebSocket service, and stream backend output into
+`terminal.write()`:
+
+```tsx
+function RemoteShell({ socket }: { socket: WebSocket }) {
+  const terminal = useXTerm({
+    onData: (data) => socket.send(JSON.stringify({ type: "input", data })),
+    onResize: ({ cols, rows }) =>
+      socket.send(JSON.stringify({ type: "resize", cols, rows }))
+  });
+
+  socket.onmessage = (event) => terminal.write(event.data);
+
+  return <XTerm terminal={terminal} className="h-[420px]" />;
 }
 ```
 
