@@ -148,6 +148,25 @@ const themes: Record<ThemeKey, { label: string; xterm: Record<string, string> }>
   }
 };
 
+const shellCommands = [
+  "help",
+  "pwd",
+  "ls",
+  "cd",
+  "cat",
+  "tree",
+  "touch",
+  "mkdir",
+  "write",
+  "append",
+  "rm",
+  "links",
+  "unicode",
+  "clear",
+  "reset",
+  "whoami"
+];
+
 function cloneFs(root: DirNode): DirNode {
   return JSON.parse(JSON.stringify(root)) as DirNode;
 }
@@ -214,6 +233,65 @@ function parseCommand(input: string): string[] {
 
   if (current) args.push(current);
   return args;
+}
+
+function commonPrefix(values: string[]): string {
+  const [first, ...rest] = values;
+  if (!first) return "";
+  let prefix = first;
+  for (const value of rest) {
+    while (!value.startsWith(prefix)) prefix = prefix.slice(0, -1);
+  }
+  return prefix;
+}
+
+function splitCompletionToken(input: string): { before: string; token: string } {
+  const match = input.match(/^(.*?)(\S*)$/);
+  return { before: match?.[1] ?? "", token: match?.[2] ?? "" };
+}
+
+function completePath(root: DirNode, cwd: string[], token: string): { replacement?: string; matches: string[] } {
+  const slashIndex = token.lastIndexOf("/");
+  const dirToken = slashIndex === -1 ? "" : token.slice(0, slashIndex + 1);
+  const leaf = slashIndex === -1 ? token : token.slice(slashIndex + 1);
+  const dirPath = normalizePath(cwd, dirToken || ".");
+  const dir = getNode(root, dirPath);
+  if (!dir || dir.type !== "dir") return { matches: [] };
+
+  const matches = Object.entries(dir.children)
+    .filter(([name]) => name.startsWith(leaf))
+    .map(([name, node]) => `${name}${node.type === "dir" ? "/" : ""}`)
+    .sort((a, b) => a.localeCompare(b));
+  if (matches.length === 0) return { matches };
+
+  const prefix = commonPrefix(matches);
+  const replacement = `${dirToken}${prefix}`;
+  return {
+    replacement: matches.length === 1 && !replacement.endsWith(" ") ? `${replacement} ` : replacement,
+    matches
+  };
+}
+
+function completeInput(input: string, cwd: string[], fs: DirNode): { next: string; hint?: string } {
+  const hasCommandOnly = !input.includes(" ");
+  if (hasCommandOnly) {
+    const matches = shellCommands.filter((command) => command.startsWith(input)).sort((a, b) => a.localeCompare(b));
+    if (matches.length === 0) return { next: input };
+    const prefix = commonPrefix(matches);
+    if (matches.length === 1) return { next: `${matches[0]} ` };
+    return {
+      next: prefix.length > input.length ? prefix : input,
+      hint: matches.join("  ")
+    };
+  }
+
+  const { before, token } = splitCompletionToken(input);
+  const completion = completePath(fs, cwd, token);
+  if (!completion.replacement) return { next: input };
+  return {
+    next: `${before}${completion.replacement}`,
+    hint: completion.matches.length > 1 ? completion.matches.join("  ") : undefined
+  };
 }
 
 function listDir(node: DirNode): string {
@@ -498,6 +576,14 @@ export function App() {
         terminal.write("^C\r\n");
         inputRef.current = "";
         writePrompt();
+        continue;
+      }
+      if (char === "\t") {
+        const completion = completeInput(inputRef.current, cwdRef.current, fsRef.current);
+        if (completion.hint) {
+          terminal.write(`\r\n${completion.hint}\r\n`);
+        }
+        replaceInput(completion.next);
         continue;
       }
       if (char === "\u007f") {
